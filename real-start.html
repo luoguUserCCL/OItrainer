@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OI教练模拟器 - 真实模式</title>
+    <link rel="stylesheet" href="real-styles.css">
+    <style>
+        /* Start page specific styles — light theme, consistent with simplified mode */
+        .start-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f7f7f8;
+            padding: 40px 20px;
+        }
+
+        .game-title {
+            font-size: 48px;
+            font-weight: bold;
+            color: #1a202c;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .game-subtitle {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .start-section {
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .start-section h3 {
+            color: #4a5568;
+            font-size: 16px;
+            margin-bottom: 12px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Difficulty Grid */
+        .difficulty-grid {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .diff-card {
+            flex: 1;
+            max-width: 200px;
+            padding: 20px 16px;
+            border-radius: 12px;
+            background: #fff;
+            border: 2px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+
+        .diff-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+        }
+
+        .diff-card.selected {
+            border-color: #2b6cb0;
+            background: linear-gradient(180deg, rgba(43,108,176,0.04), rgba(43,108,176,0.02));
+        }
+
+        .diff-card.easy { border-bottom: 3px solid #38a169; }
+        .diff-card.normal { border-bottom: 3px solid #d97706; }
+        .diff-card.hard { border-bottom: 3px solid #e53e3e; }
+
+        .diff-card .diff-name {
+            font-size: 18px;
+            color: #1a202c;
+            margin-bottom: 6px;
+        }
+
+        .diff-card .diff-desc {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Province Grid */
+        .province-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 4px;
+        }
+
+        .province-card {
+            padding: 10px 8px;
+            border-radius: 8px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            cursor: pointer;
+            text-align: center;
+            font-size: 14px;
+            color: #222;
+            transition: all 0.2s ease;
+        }
+
+        .province-card:hover {
+            background: #f9fafb;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        }
+
+        .province-card.selected {
+            border-color: #2b6cb0;
+            background: linear-gradient(180deg, rgba(43,108,176,0.04), rgba(43,108,176,0.02));
+            color: #2b6cb0;
+            font-weight: 600;
+        }
+
+        .province-card .province-type {
+            font-size: 10px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .province-card.selected .province-type {
+            color: #2b6cb0;
+        }
+
+        /* Student Count */
+        .count-selector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .count-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid #d1d5db;
+            background: #fff;
+            color: #222;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .count-btn:hover {
+            border-color: #2b6cb0;
+            background: #f0f7ff;
+        }
+
+        .count-display {
+            font-size: 28px;
+            color: #1a202c;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        /* Start Button */
+        .start-btn {
+            padding: 16px 60px;
+            font-size: 20px;
+            border-radius: 8px;
+            border: none;
+            background: #2b6cb0;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .start-btn:hover {
+            background: #3182ce;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(43,108,176,0.12);
+        }
+
+        .start-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Load Button */
+        .load-btn {
+            padding: 12px 40px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background: transparent;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 12px;
+        }
+
+        .load-btn:hover {
+            border-color: #2b6cb0;
+            color: #2b6cb0;
+        }
+
+        /* Link back to simplified */
+        .mode-link {
+            margin-top: 40px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .mode-link a {
+            color: #2b6cb0;
+            text-decoration: none;
+        }
+
+        .mode-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Contest Info Panel */
+        .contest-info {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .contest-info h4 {
+            color: #4a5568;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .contest-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .contest-tag {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            background: #f3f4f6;
+            color: #4a5568;
+            border: 1px solid #e5e7eb;
+        }
+
+        .contest-tag.oi { border-color: rgba(197,48,48,0.3); color: #c53030; }
+        .contest-tag.ioi { border-color: rgba(37,99,235,0.3); color: #2563eb; }
+        .contest-tag.self_eval { border-color: rgba(56,161,105,0.3); color: #38a169; }
+    </style>
+</head>
+<body>
+    <div class="start-page">
+        <div class="game-title">OI教练模拟器</div>
+        <div class="game-subtitle">真实模式</div>
+
+        <!-- Difficulty -->
+        <div class="start-section">
+            <h3>难度选择</h3>
+            <div class="difficulty-grid">
+                <div class="diff-card easy selected" data-diff="1" onclick="selectDifficulty(1)">
+                    <div class="diff-name">简单</div>
+                    <div class="diff-desc">天赋概率×2<br>对手较弱</div>
+                </div>
+                <div class="diff-card normal" data-diff="2" onclick="selectDifficulty(2)">
+                    <div class="diff-name">普通</div>
+                    <div class="diff-desc">标准体验</div>
+                </div>
+                <div class="diff-card hard" data-diff="3" onclick="selectDifficulty(3)">
+                    <div class="diff-name">专家</div>
+                    <div class="diff-desc">天赋概率×0.5<br>对手极强</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Province -->
+        <div class="start-section">
+            <h3>选择省份</h3>
+            <div class="province-grid" id="province-grid"></div>
+        </div>
+
+        <!-- Student Count -->
+        <div class="start-section">
+            <h3>初始学生人数</h3>
+            <div class="count-selector">
+                <button class="count-btn" onclick="changeCount(-1)">-</button>
+                <div class="count-display" id="student-count">5</div>
+                <button class="count-btn" onclick="changeCount(1)">+</button>
+            </div>
+        </div>
+
+        <!-- Contest Preview -->
+        <div class="contest-info">
+            <h4>本赛季比赛日程</h4>
+            <div class="contest-list" id="contest-preview"></div>
+        </div>
+
+        <!-- Buttons -->
+        <button class="start-btn" id="start-btn" onclick="startGame()">开始游戏</button>
+        <button class="load-btn" id="load-btn" onclick="loadGame()" style="display:none">读取存档</button>
+
+        <div class="mode-link">
+            <a href="start.html">返回简化模式</a>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="lib/utils.js"></script>
+    <script src="lib/constants.js"></script>
+    <script>
+        // Start page state
+        var selectedDifficulty = 1;
+        var selectedProvince = 0;
+        var studentCount = 5;
+
+        // Build province grid
+        (function() {
+            var grid = document.getElementById('province-grid');
+            if (!grid || typeof PROVINCES === 'undefined') return;
+
+            var keys = Object.keys(PROVINCES);
+            for (var i = 0; i < keys.length; i++) {
+                var key = keys[i];
+                var prov = PROVINCES[key];
+                var typeMap = {'强省': '强省', '普通省': '普通省', '弱省': '弱省'};
+                var typeColorMap = {'强省': '#c53030', '普通省': '#d97706', '弱省': '#38a169'};
+                var card = document.createElement('div');
+                card.className = 'province-card' + (i === 0 ? ' selected' : '');
+                card.dataset.index = key;
+                card.dataset.key = key;
+                card.innerHTML = '<div style="font-weight:600">' + (prov.name || key) + '</div>' +
+                    '<div class="province-type" style="color:' + (typeColorMap[prov.type] || '#666') + '">' +
+                    (typeMap[prov.type] || prov.type) + ' · 训练质量 ×' + (prov.trainingQuality || 1.0) + '</div>';
+                card.onclick = (function(k, idx) {
+                    return function() { selectProvince(k, idx); };
+                })(key, i);
+                grid.appendChild(card);
+            }
+            selectedProvince = keys[0] || '1';
+        })();
+
+        // Build contest preview
+        (function() {
+            var container = document.getElementById('contest-preview');
+            if (!container) return;
+            // We don't have REAL_CONTEST_SCHEDULE loaded yet, show static info
+            var contests = [
+                {name:'CSP-S1', week:'9月第3周', format:'OI'},
+                {name:'CSP-S2', week:'11月第1周', format:'OI'},
+                {name:'NOIP', week:'2月第3周', format:'OI'},
+                {name:'省选', week:'3月第1周', format:'Self-eval'},
+                {name:'APIO', week:'5月第3周', format:'IOI'},
+                {name:'NOI', week:'6月第4周', format:'Self-eval'},
+            ];
+            var formatClasses = {'OI':'oi','IOI':'ioi','SELF_EVAL':'self_eval','Self-eval':'self_eval'};
+            for (var i = 0; i < contests.length; i++) {
+                var c = contests[i];
+                var cls = formatClasses[c.format] || '';
+                container.innerHTML += '<span class="contest-tag ' + cls + '">' + c.name + ' (' + c.week + ' · ' + c.format + ')</span>';
+            }
+        })();
+
+        // Check for existing saves
+        (function() {
+            try {
+                for (var i = -1; i < 6; i++) {
+                    var key = i === -1 ? 'oi_real_save_auto' : 'oi_real_save_slot_' + i;
+                    if (localStorage.getItem(key)) {
+                        document.getElementById('load-btn').style.display = 'inline-block';
+                        break;
+                    }
+                }
+            } catch(e) {}
+        })();
+
+        function selectDifficulty(d) {
+            selectedDifficulty = d;
+            var cards = document.querySelectorAll('.diff-card');
+            for (var i = 0; i < cards.length; i++) {
+                cards[i].classList.toggle('selected', parseInt(cards[i].dataset.diff) === d);
+            }
+        }
+
+        function selectProvince(key, visualIdx) {
+            selectedProvince = key;
+            var cards = document.querySelectorAll('.province-card');
+            for (var i = 0; i < cards.length; i++) {
+                cards[i].classList.toggle('selected', cards[i].dataset.key === key);
+            }
+        }
+
+        function changeCount(delta) {
+            studentCount = Math.max(3, Math.min(10, studentCount + delta));
+            document.getElementById('student-count').textContent = studentCount;
+        }
+
+        function startGame() {
+            var params = '?new=1&d=' + selectedDifficulty + '&p=' + selectedProvince + '&c=' + studentCount;
+            window.location.href = 'real-game.html' + params;
+        }
+
+        function loadGame() {
+            window.location.href = 'real-game.html';
+        }
+    </script>
+</body>
+</html>

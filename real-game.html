@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OI教练模拟器 - 真实模式</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="real-styles.css">
+</head>
+<body>
+    <div class="container">
+      <header>
+        <div>
+          <h1>OI 教练模拟器 - 真实模式</h1>
+        </div>
+        <div class="topline">
+          <div id="header-week" class="small">第 1 周</div>
+          <div id="header-budget" class="small">经费: ¥0</div>
+          <div id="header-reputation" class="small">声誉: 0</div>
+          <div id="header-weather" class="small">天气: 晴</div>
+          <div id="header-next-comp-small" class="small">下场比赛: 无</div>
+        </div>
+      </header>
+
+      <div class="row">
+        <!-- 左面板：学生 + 设施 + 预算 -->
+        <div class="col panel" style="flex: 1 1 600px;">
+          <div class="flex-between">
+            <h3 style="margin:0">学生与状态</h3>
+            <div class="small" id="info-comfort"></div>
+          </div>
+          <div id="student-list" style="margin-top:10px;"></div>
+
+          <div style="margin-top:12px;">
+            <h4 style="margin:0 0 8px 0">设施</h4>
+            <div id="facilities-panel"></div>
+          </div>
+
+          <div style="margin-top:12px;">
+            <h4 style="margin:0 0 8px 0">经费详情</h4>
+            <div id="budget-panel"></div>
+          </div>
+
+          <div style="margin-top:12px;">
+            <h4 style="margin:0 0 8px 0">比赛日程</h4>
+            <div id="contest-schedule"></div>
+          </div>
+
+          <div style="margin-top:12px;">
+            <h4 style="margin:0 0 8px 0">日志</h4>
+            <div id="event-log" style="height:100px;overflow:auto;border:1px solid #eee;padding:8px;border-radius:6px;background:#fff;font-size:13px"></div>
+          </div>
+        </div>
+
+        <!-- 右面板：操作 -->
+        <div class="col panel" style="flex: 0 0 360px;">
+          <h3 style="margin-top:0">本周行动（每个行动持续1周）</h3>
+          <div id="actions-panel" class="action-cards"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 模态框容器 ==================== -->
+    <div id="modal-root"></div>
+
+    <!-- ==================== 游戏结束遮罩 ==================== -->
+    <div id="game-over-overlay" style="display:none"></div>
+
+    <!-- ==================== 脚本加载（按依赖顺序） ==================== -->
+
+    <!-- 原始 lib 模块 -->
+    <script src="lib/utils.js"></script>
+    <script src="lib/constants.js"></script>
+    <script src="lib/models.js"></script>
+    <script src="lib/talent.js"></script>
+    <script src="lib/task.js"></script>
+    <script src="lib/competitions.js"></script>
+    <script src="lib/contest-ui.js"></script>
+    <script src="lib/contest-integration.js"></script>
+
+    <!-- Real Mode 模块 -->
+    <script src="lib/real/real-data.js"></script>
+    <script src="lib/real/real-personality.js"></script>
+    <script src="lib/real/real-budget.js"></script>
+    <script src="lib/real/real-save.js"></script>
+    <script src="lib/real/real-simulator.js"></script>
+    <script src="lib/real/real-training.js"></script>
+    <script src="lib/real/real-events.js"></script>
+    <script src="lib/real/real-game.js"></script>
+    <script src="lib/real/real-render.js"></script>
+
+    <!-- ==================== 初始化 ==================== -->
+    <script>
+        (function () {
+            'use strict';
+
+            /* 解析 URL 参数 */
+            var params = new URLSearchParams(window.location.search);
+            var isNew         = params.get('new');
+            var difficulty    = parseInt(params.get('d'), 10) || 2;
+            var studentCount  = parseInt(params.get('c'), 10) || 5;
+
+            /* 获取省份信息 */
+            var provinces   = (typeof PROVINCES !== 'undefined') ? PROVINCES : {};
+            var provinceKey  = params.get('p') || '';
+            // provinceKey 可能是数字字符串的索引（向后兼容）或省份 key
+            if (!provinceKey || !provinces[provinceKey]) {
+                // 尝试作为数组索引解析
+                var pIdx = parseInt(params.get('p'), 10);
+                if (!isNaN(pIdx)) {
+                    var provinceKeys2 = Object.keys(provinces);
+                    provinceKey = provinceKeys2[pIdx] || provinceKeys2[0] || '1';
+                } else {
+                    provinceKey = Object.keys(provinces)[0] || '1';
+                }
+            }
+            var provinceInfo = provinces[provinceKey] || {};
+            var provinceName = provinceInfo.name || '北京';
+            var provinceType = provinceInfo.type || '强省';
+            var isNorth      = provinceInfo.isNorth || provinceInfo.is_north || false;
+            // 计算省份在 Object.keys(provinces) 中的 0-based 索引
+            var allProvKeys = Object.keys(provinces);
+            var provinceIndex = allProvKeys.indexOf(provinceKey);
+            if (provinceIndex < 0) provinceIndex = 0;
+
+            if (isNew) {
+                /* 新游戏初始化 */
+                if (window.RealGame && typeof window.RealGame.init === 'function') {
+                    window.RealGame.init({
+                        difficulty:    difficulty,
+                        provinceIndex: provinceIndex,
+                        provinceName:  provinceName,
+                        provinceType:  provinceType,
+                        is_north:      isNorth,
+                        studentCount:  studentCount
+                    });
+                }
+            } else {
+                /* 尝试自动读档 */
+                if (window.RealSaveManager && typeof window.RealSaveManager.hasAnySave === 'function' &&
+                    window.RealSaveManager.hasAnySave()) {
+                    if (window.RealGame && typeof window.RealGame.loadGame === 'function') {
+                        window.RealGame.loadGame(-1);
+                    }
+                } else {
+                    /* 没有存档，跳转到开始页面 */
+                    window.location.href = 'real-start.html';
+                    return;
+                }
+            }
+
+            /* 初始化渲染器 */
+            if (window.RealRender && typeof window.RealRender.init === 'function') {
+                window.RealRender.init();
+            }
+        })();
+    </script>
+</body>
+</html>

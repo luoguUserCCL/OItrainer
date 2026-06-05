@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>结算 — OI 教练模拟器（真实模式）</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { background: #f0f2f5; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px 16px; }
+    .end-header { text-align: center; margin-bottom: 20px; }
+    .end-header h1 { color: #1565c0; font-size: 28px; margin: 0 0 4px; }
+    .end-header .reason { color: #666; font-size: 14px; }
+    .info-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px;
+    }
+    .info-card {
+      background: #fff; padding: 10px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+    .info-card .label { font-size: 12px; color: #888; }
+    .info-card .value { font-size: 18px; font-weight: 700; color: #333; margin-top: 2px; }
+    .info-card .value.gold { color: #d4a017; }
+    .info-card .value.silver { color: #607d8b; }
+    .info-card .value.bronze { color: #8d6e63; }
+    .section {
+      background: #fff; border-radius: 10px; padding: 16px; margin-bottom: 16px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .section h3 {
+      font-size: 15px; color: #333; border-bottom: 2px solid #e3f2fd;
+      padding-bottom: 8px; margin: 0 0 12px;
+    }
+    .section table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .section th { background: #f5f7fa; padding: 6px 8px; text-align: left; font-weight: 600; }
+    .section td { padding: 5px 8px; border-bottom: 1px solid #f0f0f0; }
+    .chain-overview {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;
+    }
+    .chain-card { padding: 12px; border-radius: 8px; }
+    .chain-card.chain1 { background: #e8f5e9; border-left: 4px solid #4caf50; }
+    .chain-card.chain2 { background: #e3f2fd; border-left: 4px solid #2196f3; }
+    .chain-card .chain-title { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+    .chain-card.chain1 .chain-title { color: #2e7d32; }
+    .chain-card.chain2 .chain-title { color: #1565c0; }
+    .chain-card .chain-stats { font-size: 12px; color: #555; }
+    .end-actions {
+      display: flex; gap: 10px; justify-content: center; margin-top: 20px; flex-wrap: wrap;
+    }
+    .end-actions button, .end-actions a {
+      padding: 10px 24px; font-size: 14px; border: none; border-radius: 6px;
+      cursor: pointer; text-decoration: none; font-weight: 600;
+    }
+    .btn-primary { background: #1565c0; color: #fff; }
+    .btn-primary:hover { background: #1256a0; }
+    .btn-secondary { background: #e0e0e0; color: #333; }
+    .btn-secondary:hover { background: #d0d0d0; }
+    .btn-share { background: #2b6cb0; color: #fff; }
+    .btn-share:hover { background: #245a98; }
+    .muted { color: #999; font-size: 13px; text-align: center; padding: 12px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="end-header">
+    <h1>🏆 真实模式 · 赛季结算</h1>
+    <div class="reason" id="end-reason"></div>
+  </div>
+
+  <!-- 基本信息 -->
+  <div class="info-grid" id="info-grid"></div>
+
+  <!-- 链概览 -->
+  <div class="chain-overview" id="chain-overview"></div>
+
+  <!-- 比赛时间线 -->
+  <div class="section" id="timeline-section">
+    <h3>📅 比赛时间线</h3>
+    <div id="timeline-content"></div>
+  </div>
+
+  <!-- 学生最终数据 -->
+  <div class="section" id="students-section">
+    <h3>👨‍🎓 学生最终数据</h3>
+    <div id="students-content"></div>
+  </div>
+
+  <!-- IOI 成绩 -->
+  <div class="section" id="ioi-section" style="display:none">
+    <h3>🌍 IOI 成绩</h3>
+    <div id="ioi-content"></div>
+  </div>
+
+  <!-- 操作按钮 -->
+  <div class="end-actions">
+    <button class="btn-primary" onclick="location.href='real-start.html'">返回主菜单</button>
+    <button class="btn-secondary" onclick="playAgain()">再玩一次</button>
+    <a class="btn-share" href="javascript:void(0)" onclick="shareResult()">分享结果</a>
+  </div>
+</div>
+
+<script>
+  // 读取结算数据
+  var endingData = null;
+  try {
+    var raw = localStorage.getItem('oi_real_ending');
+    if (raw) endingData = JSON.parse(raw);
+  } catch(e) { console.error('读取结算数据失败:', e); }
+
+  if (!endingData) {
+    document.querySelector('.container').innerHTML =
+      '<div class="muted" style="padding:40px">未找到结算数据，请先完成一局游戏。</div>';
+  } else {
+    renderEnding(endingData);
+  }
+
+  function renderEnding(d) {
+    // 结算原因
+    document.getElementById('end-reason').textContent = d.reason || '赛季结束';
+
+    // 基本信息
+    var diffLabels = {1:'简单', 2:'普通', 3:'困难'};
+    var infoHtml =
+      infoCard('难度', diffLabels[d.difficulty] || '普通', '') +
+      infoCard('省份', (d.provinceName || '') + '（' + (d.provinceType || '') + '）', '') +
+      infoCard('总周数', d.week + ' 周', '') +
+      infoCard('最终声誉', d.reputation || 0, '') +
+      infoCard('初始/退赛', (d.initialStudents || 0) + ' / ' + (d.quitStudents || 0), '') +
+      infoCard('总奖牌', '🥇' + (d.medals ? d.medals.gold : 0) + ' 🥈' + (d.medals ? d.medals.silver : 0) + ' 🥉' + (d.medals ? d.medals.bronze : 0), '');
+    document.getElementById('info-grid').innerHTML = infoHtml;
+
+    // 链概览
+    var s1Comps = (d.competitions || []).filter(function(c){ return !c.season || c.season !== 2; });
+    var s2Comps = (d.competitions || []).filter(function(c){ return c.season === 2; });
+    var chainHtml =
+      chainCard('chain1', '链1（高一起）', s1Comps) +
+      chainCard('chain2', '链2（高二起）', s2Comps);
+    document.getElementById('chain-overview').innerHTML = chainHtml;
+
+    // 比赛时间线
+    renderTimeline(d.competitions || []);
+
+    // 学生数据
+    renderStudents(d.students || [], d.competitions || []);
+
+    // IOI 成绩
+    renderIOI(d.competitions || []);
+  }
+
+  function infoCard(label, value, cls) {
+    return '<div class="info-card"><div class="label">' + label + '</div><div class="value ' + cls + '">' + value + '</div></div>';
+  }
+
+  function chainCard(cls, title, comps) {
+    var medals = {gold:0, silver:0, bronze:0};
+    var participated = 0;
+    for (var i = 0; i < comps.length; i++) {
+      if (comps[i].results) {
+        participated++;
+        for (var r = 0; r < comps[i].results.length; r++) {
+          var m = comps[i].results[r].medal;
+          if (m === 'gold') medals.gold++;
+          else if (m === 'silver') medals.silver++;
+          else if (m === 'bronze') medals.bronze++;
+        }
+      }
+    }
+    return '<div class="chain-card ' + cls + '">' +
+      '<div class="chain-title">' + title + '</div>' +
+      '<div class="chain-stats">参赛 ' + comps.length + ' 场 | 🥇' + medals.gold + ' 🥈' + medals.silver + ' 🥉' + medals.bronze + '</div></div>';
+  }
+
+  function formatWeek(week) {
+    // 简单的周数格式化（与 RealCalendar 类似）
+    if (!week) return '';
+    var months = [
+      {name:'9月', short:'9月', start:1}, {name:'10月', short:'10月', start:5},
+      {name:'11月', short:'11月', start:9}, {name:'12月', short:'12月', start:13},
+      {name:'1月', short:'1月', start:17}, {name:'2月', short:'2月', start:21},
+      {name:'3月', short:'3月', start:25}, {name:'4月', short:'4月', start:29},
+      {name:'5月', short:'5月', start:33}, {name:'6月', short:'6月', start:37},
+      {name:'7月', short:'7月', start:41}, {name:'8月', short:'8月', start:45}
+    ];
+    var yearLabel = week <= 48 ? '高一' : (week <= 96 ? '高二' : '高三');
+    for (var i = months.length - 1; i >= 0; i--) {
+      if (week >= months[i].start) {
+        var wInMonth = week - months[i].start + 1;
+        return yearLabel + months[i].short + '第' + wInMonth + '周';
+      }
+    }
+    return '第' + week + '周';
+  }
+
+  function renderTimeline(comps) {
+    var el = document.getElementById('timeline-content');
+    if (!comps.length) { el.innerHTML = '<div class="muted">无比赛记录</div>'; return; }
+
+    var html = '<table><thead><tr><th>比赛</th><th>时间</th><th>结果</th></tr></thead><tbody>';
+    for (var i = 0; i < comps.length; i++) {
+      var c = comps[i];
+      var pass = 0, gold = 0, silver = 0, bronze = 0;
+      if (c.results) {
+        for (var r = 0; r < c.results.length; r++) {
+          if (c.results[r].passed) pass++;
+          var m = c.results[r].medal;
+          if (m === 'gold') gold++;
+          else if (m === 'silver') silver++;
+          else if (m === 'bronze') bronze++;
+        }
+      }
+      var medalStr = '';
+      if (gold) medalStr += ' 🥇×' + gold;
+      if (silver) medalStr += ' 🥈×' + silver;
+      if (bronze) medalStr += ' 🥉×' + bronze;
+      html += '<tr><td>' + (c.name || '') + '</td><td>' + formatWeek(c.week) + '</td><td>' +
+        pass + '/' + (c.results ? c.results.length : 0) + ' 过线' + medalStr + '</td></tr>';
+    }
+    html += '</tbody></table>';
+    el.innerHTML = html;
+  }
+
+  function renderStudents(students, comps) {
+    var el = document.getElementById('students-content');
+    var active = [];
+    for (var i = 0; i < students.length; i++) {
+      if (students[i].active !== false) active.push(students[i]);
+    }
+    if (!active.length) { el.innerHTML = '<div class="muted">无活跃学生</div>'; return; }
+
+    // 统计每个学生的奖牌
+    var medalMap = {};
+    for (var ci = 0; ci < comps.length; ci++) {
+      if (!comps[ci].results) continue;
+      for (var ri = 0; ri < comps[ci].results.length; ri++) {
+        var r = comps[ci].results[ri];
+        var name = r.student ? r.student.name : '';
+        if (!name) continue;
+        if (!medalMap[name]) medalMap[name] = {gold:0, silver:0, bronze:0};
+        var m = r.medal;
+        if (m === 'gold') medalMap[name].gold++;
+        else if (m === 'silver') medalMap[name].silver++;
+        else if (m === 'bronze') medalMap[name].bronze++;
+      }
+    }
+
+    var html = '<table><thead><tr><th>姓名</th><th>思维</th><th>代码</th><th>心理</th><th>DS</th><th>图</th><th>字</th><th>数</th><th>DP</th><th>奖牌</th></tr></thead><tbody>';
+    for (var si = 0; si < active.length; si++) {
+      var s = active[si];
+      var mc = medalMap[s.name] || {gold:0, silver:0, bronze:0};
+      var mStr = '';
+      if (mc.gold) mStr += '🥇' + mc.gold;
+      if (mc.silver) mStr += '🥈' + mc.silver;
+      if (mc.bronze) mStr += '🥉' + mc.bronze;
+      html += '<tr><td style="font-weight:600">' + s.name + '</td>' +
+        '<td>' + Math.floor(s.thinking || 0) + '</td>' +
+        '<td>' + Math.floor(s.coding || 0) + '</td>' +
+        '<td>' + Math.floor(s.mental || 0) + '</td>' +
+        '<td>' + Math.floor(s.knowledge_ds || 0) + '</td>' +
+        '<td>' + Math.floor(s.knowledge_graph || 0) + '</td>' +
+        '<td>' + Math.floor(s.knowledge_string || 0) + '</td>' +
+        '<td>' + Math.floor(s.knowledge_math || 0) + '</td>' +
+        '<td>' + Math.floor(s.knowledge_dp || 0) + '</td>' +
+        '<td>' + (mStr || '-') + '</td></tr>';
+    }
+    html += '</tbody></table>';
+    el.innerHTML = html;
+  }
+
+  function renderIOI(comps) {
+    var ioiComps = [];
+    for (var i = 0; i < comps.length; i++) {
+      if (comps[i].name && comps[i].name.indexOf('IOI') !== -1) ioiComps.push(comps[i]);
+    }
+    if (!ioiComps.length) return;
+
+    document.getElementById('ioi-section').style.display = '';
+    var html = '<table><thead><tr><th>链</th><th>学生</th><th>分数</th></tr></thead><tbody>';
+    for (var i = 0; i < ioiComps.length; i++) {
+      var c = ioiComps[i];
+      var isS2 = (c.season === 2);
+      if (c.results) {
+        for (var r = 0; r < c.results.length; r++) {
+          html += '<tr><td>' + (isS2 ? '链2' : '链1') + '</td>' +
+            '<td>' + (c.results[r].student ? c.results[r].student.name : '') + '</td>' +
+            '<td style="font-weight:600">' + (c.results[r].score || 0) + '</td></tr>';
+        }
+      }
+    }
+    html += '</tbody></table>';
+    document.getElementById('ioi-content').innerHTML = html;
+  }
+
+  function playAgain() {
+    localStorage.removeItem('oi_real_ending');
+    location.href = 'real-start.html';
+  }
+
+  function shareResult() {
+    var d = endingData;
+    if (!d) { alert('无结算数据'); return; }
+    var text = '🏆 OI教练模拟器（真实模式）结算\n' +
+      '难度: ' + ({1:'简单',2:'普通',3:'困难'}[d.difficulty] || '普通') + ' | 省份: ' + (d.provinceName||'') + '\n' +
+      '总周数: ' + d.week + '周 | 奖牌: 🥇' + (d.medals?d.medals.gold:0) + ' 🥈' + (d.medals?d.medals.silver:0) + ' 🥉' + (d.medals?d.medals.bronze:0);
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(function(){ alert('已复制到剪贴板'); }).catch(function(){ prompt('复制以下内容：', text); });
+    } else {
+      prompt('复制以下内容：', text);
+    }
+  }
+</script>
+</body>
+</html>

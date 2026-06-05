@@ -1,0 +1,990 @@
+/* ==========================================================================
+ * real-styles.css — OItrainer Real Mode 补充样式表
+ * --------------------------------------------------------------------------
+ * 仅包含真实模式特有的样式，基础样式继承自 styles.css。
+ * ========================================================================== */
+
+/* ==================== 真实模式特有布局 ==================== */
+
+/* 已行动通知 */
+.action-taken-notice {
+  padding: 10px 14px;
+  background: #fffbe6;
+  border: 1px solid rgba(183, 121, 0, 0.15);
+  border-radius: 6px;
+  color: #b77900;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+/* ==================== 真实模式操作卡片分类颜色 ==================== */
+/* 训练类 */
+.action-card.training {
+  border-left: 3px solid var(--accent, #2b6cb0);
+}
+.action-card.training:hover {
+  background: #f0f7ff;
+}
+
+.action-card.heavy-training {
+  border-left: 3px solid #60a5fa;
+}
+.action-card.heavy-training:hover {
+  background: #f0f7ff;
+}
+
+.action-card.camp {
+  border-left: 3px solid var(--accent-green, #38a169);
+}
+.action-card.camp:hover {
+  background: #f0fff4;
+}
+
+.action-card.outing {
+  border-left: 3px solid #6366f1;
+}
+.action-card.outing:hover {
+  background: #eef2ff;
+}
+
+.action-card.academic {
+  border-left: 3px solid var(--accent-orange, #d97706);
+}
+.action-card.academic:hover {
+  background: #fffbe6;
+}
+
+.action-card.exercise {
+  border-left: 3px solid #38a169;
+}
+.action-card.exercise:hover {
+  background: #f0fff4;
+}
+
+.action-card.rest {
+  border-left: 3px solid #666;
+}
+.action-card.rest:hover {
+  background: #f9fafb;
+}
+
+.action-card.entertainment {
+  border-left: 3px solid #d53f8c;
+}
+.action-card.entertainment:hover {
+  background: #fdf2f8;
+}
+
+/* 比赛类 */
+.action-card.contest {
+  border-left: 3px solid #805ad5;
+  background: linear-gradient(90deg, rgba(128, 90, 213, 0.06), rgba(128, 90, 213, 0.02));
+}
+.action-card.contest:hover {
+  background: linear-gradient(90deg, rgba(128, 90, 213, 0.12), rgba(128, 90, 213, 0.06));
+  box-shadow: 0 4px 12px rgba(128, 90, 213, 0.12);
+}
+
+.action-card.mock {
+  border-left: 3px solid #06b6d4;
+}
+.action-card.mock:hover {
+  background: #ecfeff;
+}
+
+/* 管理类 */
+.action-card.recruit {
+  border-left: 3px solid #38a169;
+}
+.action-card.recruit:hover {
+  background: #f0fff4;
+}
+
+.action-card.treat {
+  border-left: 3px solid #ec4899;
+}
+.action-card.treat:hover {
+  background: #fdf2f8;
+}
+
+.action-card.save {
+  border-left: 3px solid #2b6cb0;
+}
+.action-card.save:hover {
+  background: #f0f7ff;
+}
+
+.action-card.load {
+  border-left: 3px solid #d97706;
+}
+.action-card.load:hover {
+  background: #fffbe6;
+}
+
+/* 推进周 */
+.action-card.advance-week {
+  border-left: 3px solid #38a169;
+  background: linear-gradient(135deg, rgba(56, 161, 105, 0.06), rgba(56, 161, 105, 0.03));
+  font-size: 14px;
+}
+.action-card.advance-week:hover {
+  background: linear-gradient(135deg, rgba(56, 161, 105, 0.12), rgba(56, 161, 105, 0.06));
+  box-shadow: 0 4px 12px rgba(56, 161, 105, 0.12);
+}
+
+.action-card.advance-week .card-title {
+  font-size: 14px;
+}
+
+/* ==================== 性格徽章 ==================== */
+.personality-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  background: #faf5ff;
+  color: #805ad5;
+  border: 1px solid rgba(128, 90, 213, 0.15);
+  cursor: help;
+  transition: 0.15s ease;
+}
+
+.personality-badge:hover {
+  background: #f3e8ff;
+  transform: translateY(-1px);
+}
+
+/* ==================== 比赛日程列表 ==================== */
+.contest-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  margin-bottom: 6px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  transition: 0.15s ease;
+  font-size: 12px;
+  flex-wrap: wrap;
+}
+
+.contest-item:hover {
+  border-color: #cbd5e0;
+  background: #f3f4f6;
+}
+
+.contest-item.completed {
+  opacity: 0.5;
+}
+
+.contest-item.current {
+  border-color: #2b6cb0;
+  background: #eff6ff;
+  box-shadow: 0 4px 12px rgba(43, 108, 176, 0.12);
+}
+
+.contest-item.upcoming {
+  opacity: 0.8;
+}
+
+.contest-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.contest-name {
+  font-weight: 600;
+  color: #222;
+  flex: 1;
+  min-width: 80px;
+}
+
+.contest-week {
+  color: #666;
+  white-space: nowrap;
+}
+
+.contest-format {
+  color: #4a5568;
+  padding: 2px 6px;
+  background: #f3f4f6;
+  border-radius: 4px;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.contest-fee {
+  color: #d97706;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.contest-qual {
+  color: #38a169;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ==================== 预算面板 ==================== */
+.budget-amount {
+  font-size: 22px;
+  font-weight: 800;
+  color: #38a169;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.budget-detail {
+  font-size: 12px;
+  color: #4a5568;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.budget-weekly {
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+}
+
+/* ==================== 假期徽章 ==================== */
+.vacation-badge {
+  display: inline-block;
+  background: #fffbe6;
+  color: #b77900;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(183, 121, 0, 0.15);
+}
+
+.next-contest {
+  background: #fffde7 !important;
+  border: 1px solid rgba(216, 67, 21, 0.12) !important;
+  color: #d84315 !important;
+  font-weight: bold;
+}
+
+/* ==================== 晋级链徽章 ==================== */
+.qual-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: help;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  transition: 0.15s ease;
+}
+
+.qual-badge:hover {
+  transform: translateY(-1px);
+}
+
+/* ==================== 比赛实时UI ==================== */
+.contest-timer {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #2b6cb0;
+  padding: 10px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+.contest-students {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.contest-student-panel {
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  transition: 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.contest-student-panel:hover {
+  border-color: #cbd5e0;
+}
+
+.csp-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a202c;
+  margin-bottom: 4px;
+}
+
+.csp-score {
+  font-size: 13px;
+  color: #2b6cb0;
+  font-weight: 600;
+}
+
+.csp-log {
+  font-size: 11px;
+  color: #666;
+  margin-top: 6px;
+  max-height: 60px;
+  overflow-y: auto;
+}
+
+.contest-log {
+  max-height: 120px;
+  overflow-y: auto;
+  margin-bottom: 12px;
+  padding: 8px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+}
+
+.log-entry {
+  padding: 3px 0;
+  font-size: 12px;
+  border-bottom: 1px dashed #eee;
+}
+
+.log-entry:last-child {
+  border-bottom: none;
+}
+
+.log-info { color: #4a5568; }
+.log-success { color: #38a169; }
+.log-warning { color: #d97706; }
+.log-error { color: #e53e3e; }
+
+/* 比赛结果 */
+.results-summary {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #b77900;
+  padding: 10px;
+  background: #fffbe6;
+  border: 1px solid rgba(183, 121, 0, 0.15);
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+}
+
+.results-table th,
+.results-table td {
+  padding: 10px 12px;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+  font-size: 13px;
+}
+
+.results-table th {
+  background: #f3f4f6;
+  color: #374151;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.results-table td:first-child {
+  font-weight: 700;
+  color: #3b82f6;
+  background: #eff6ff;
+}
+
+.results-table tr.passed td {
+  color: #38a169;
+}
+
+.results-table tr.passed td:first-child {
+  color: #38a169;
+  background: #f0fff4;
+}
+
+.results-table tr.failed td {
+  color: #666;
+}
+
+.results-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+/* 奖牌展示 */
+.medal-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+}
+
+.medal-item {
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  background: #fff;
+  border-radius: 4px;
+  color: #222;
+}
+
+/* ==================== 存档槽位 ==================== */
+.save-slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.save-slot {
+  text-align: center;
+  padding: 16px 12px;
+  font-size: 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #fff;
+  transition: 0.15s ease;
+}
+
+.save-slot:hover {
+  background: #f0f7ff;
+  border-color: #2b6cb0;
+  box-shadow: 0 2px 8px rgba(43, 108, 176, 0.1);
+}
+
+.save-slot small {
+  display: block;
+  font-size: 11px;
+  color: #666;
+  margin-top: 4px;
+  font-weight: 400;
+}
+
+.save-slot .has-save {
+  border-color: #2b6cb0;
+}
+
+.save-slot .has-save small {
+  color: #2b6cb0;
+}
+
+/* ==================== 空状态 ==================== */
+.empty-state {
+  text-align: center;
+  color: #666;
+  font-size: 13px;
+  padding: 16px;
+  font-style: italic;
+}
+
+/* ==================== 确认对话框 ==================== */
+.confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2000;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: confirmFadeIn 0.2s ease;
+}
+
+@keyframes confirmFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.confirm-box {
+  background: #fff;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 24px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  animation: confirmSlideIn 0.2s ease;
+  text-align: center;
+}
+
+@keyframes confirmSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.confirm-box h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a202c;
+  margin-bottom: 12px;
+}
+
+.confirm-message {
+  font-size: 14px;
+  color: #4a5568;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.confirm-actions .btn {
+  min-width: 80px;
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 6px;
+}
+
+.confirm-actions .btn-cancel {
+  background: transparent;
+  border: 1px solid #ddd;
+  color: #333;
+}
+
+.confirm-actions .btn-cancel:hover {
+  background: #f3f4f6;
+}
+
+.confirm-actions .btn-danger {
+  background: #e53e3e;
+  border-color: #e53e3e;
+}
+
+.confirm-actions .btn-danger:hover {
+  background: #c53030;
+}
+
+/* ==================== 游戏结束遮罩 ==================== */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2000;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: confirmFadeIn 0.5s ease;
+}
+
+.game-over-content {
+  background: #fff;
+  border: 2px solid #d1d5db;
+  border-radius: 10px;
+  padding: 32px;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  animation: confirmSlideIn 0.5s ease;
+}
+
+.game-over-content h2 {
+  font-size: 24px;
+  font-weight: 800;
+  color: #e53e3e;
+  margin-bottom: 12px;
+}
+
+.game-over-reason {
+  font-size: 14px;
+  color: #4a5568;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.game-over-stats {
+  margin-bottom: 20px;
+}
+
+.game-over-stats p {
+  font-size: 14px;
+  color: #222;
+  margin-bottom: 6px;
+}
+
+/* ==================== 研学模态框中的子元素 ==================== */
+.outing-section {
+  margin-bottom: 10px;
+}
+
+.outing-section label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.outing-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-height: 120px;
+  overflow: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 6px;
+}
+
+.outing-student-grid {
+  max-height: 180px;
+  overflow: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 6px;
+}
+
+.outing-stu-card {
+  display: inline-block;
+  padding: 6px 8px;
+  margin: 3px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  opacity: 0.45;
+  transition: opacity 0.15s;
+}
+
+.outing-stu-card.selected {
+  opacity: 1;
+  border-color: #2b6cb0;
+  background: #eff6ff;
+}
+
+.outing-stu-card:hover {
+  border-color: #cbd5e0;
+}
+
+.outing-talent-section {
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: #f7fafc;
+}
+
+.outing-talent-toggle {
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.outing-talent-panel {
+  margin-top: 8px;
+}
+
+.outing-talent-grid {
+  max-height: 150px;
+  overflow: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.outing-talent-card {
+  padding: 4px 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: opacity 0.15s;
+}
+
+.outing-talent-card.selected {
+  opacity: 1;
+  border-color: #2b6cb0;
+}
+
+.outing-cost-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.outing-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.outing-actions .btn {
+  flex: 1;
+  text-align: center;
+}
+
+/* ==================== 训练模态框 ==================== */
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.task-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.task-card {
+  padding: 10px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  position: relative;
+}
+
+.task-card:hover {
+  border-color: #cbd5e0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.task-card.selected {
+  border-color: #3182ce !important;
+  background: #eff6ff !important;
+  box-shadow: 0 8px 24px rgba(49, 130, 206, 0.12);
+  transform: translateY(-2px);
+}
+
+/* 任务卡片难度颜色 */
+.task-card.diff-red { border-top: 3px solid #c53030; }
+.task-card.diff-orange { border-top: 3px solid #d97706; }
+.task-card.diff-yellow { border-top: 3px solid #b77900; }
+.task-card.diff-green { border-top: 3px solid #2f855a; }
+.task-card.diff-blue { border-top: 3px solid #2563eb; }
+.task-card.diff-purple { border-top: 3px solid #6b21a8; }
+.task-card.diff-black { border-top: 3px solid #0f172a; }
+
+.task-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 6px;
+}
+
+.task-diff {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-bottom: 6px;
+  display: inline-block;
+}
+
+.task-diff.diff-red { background: #fff0f0; color: #c53030; }
+.task-diff.diff-orange { background: #fff7ed; color: #d97706; }
+.task-diff.diff-yellow { background: #fffbe6; color: #b77900; }
+.task-diff.diff-green { background: #f0fff4; color: #2f855a; }
+.task-diff.diff-blue { background: #f0f8ff; color: #2563eb; }
+.task-diff.diff-purple { background: #faf5ff; color: #6b21a8; }
+.task-diff.diff-black { background: #f5f5f5; color: #0f172a; }
+
+.task-boosts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.boost-tag {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  background: #f0fff4;
+  border-radius: 4px;
+  color: #2f855a;
+  border: 1px solid rgba(56, 161, 105, 0.15);
+}
+
+.boost-tag-ability {
+  background: #ebf8ff;
+  color: #2b6cb0;
+  border: 1px solid rgba(66, 153, 225, 0.2);
+}
+
+/* 强度选择器 */
+.intensity-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 10px;
+  background: #f9fafb;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.intensity-selector label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a5568;
+  margin-right: 4px;
+}
+
+.intensity-btn {
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a5568;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+.intensity-btn:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.intensity-btn.active {
+  background: #2b6cb0;
+  color: #fff;
+  border-color: #2b6cb0;
+  box-shadow: 0 4px 12px rgba(43, 108, 176, 0.12);
+}
+
+/* 学生选择 */
+.student-select {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 10px;
+  background: #f9fafb;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.student-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-size: 13px;
+  color: #4a5568;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.15s ease;
+  user-select: none;
+}
+
+.student-check:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.student-check input[type="checkbox"] {
+  accent-color: #2b6cb0;
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+}
+
+/* ==================== 设施升级 ==================== */
+.upgrade-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #4a5568;
+  flex-wrap: wrap;
+}
+
+/* ==================== 事件日志类型标记 ==================== */
+.event-item.event-contest {
+  border-left: 3px solid #805ad5;
+}
+
+.event-item.event-info {
+  border-left: 3px solid #2b6cb0;
+}
+
+.event-item.event-warning {
+  border-left: 3px solid #d97706;
+}
+
+.event-item.event-danger {
+  border-left: 3px solid #e53e3e;
+}
+
+.event-item.event-success {
+  border-left: 3px solid #38a169;
+}
+
+.no-events {
+  text-align: center;
+  color: #666;
+  font-size: 13px;
+  padding: 12px;
+  font-style: italic;
+}
+
+/* ==================== 动画 ==================== */
+.fade-in {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
